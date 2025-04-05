@@ -90,7 +90,7 @@ const MainLayout = () => {
 		return (
 			<div className="flex items-center justify-center w-full h-screen">
 				<img
-					src="/logo.png"
+					src="/company_logo.png"
 					className="select-none h-[4rem] animate-pulse"
 				/>
 			</div>

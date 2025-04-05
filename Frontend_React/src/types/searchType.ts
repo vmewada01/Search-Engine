@@ -70,6 +70,7 @@ export interface LogResponse {
   export interface SearchingFilters {
     page: number;
     limit: number;
+    query: string;
   }
   export interface LoadingMap {
     isDeletingTemplateParam: string | null;
