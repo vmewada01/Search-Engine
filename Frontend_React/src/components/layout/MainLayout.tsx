@@ -33,7 +33,7 @@ const MainLayout = () => {
 
 	const menuItems = [
 		{
-			label: "Dashboard",
+			label: "Search Engine",
 			icon: <DashboardOutlined />,
 			onClick: () => navigate("/search-engine"),
 			path: "/search-engine",
@@ -43,7 +43,7 @@ const MainLayout = () => {
 			label: "Upload",
 			icon: <UploadOutlined />,
 			onClick: () => navigate("/search-engine/upload"),
-			path: ""
+			path: "/search-engine/upload"
 		},
 	].map((i, idx) => ({ key: idx, ...i }));
 
