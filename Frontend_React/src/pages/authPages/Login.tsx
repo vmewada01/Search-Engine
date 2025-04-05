@@ -49,7 +49,7 @@ const Login = () => {
 				backgroundSize: "cover",
 				backgroundPosition: "center",
 			}}
-			className="flex items-center justify-center h-full px-6 md:px-0 bg-red-500"
+			className="flex items-center justify-center h-full px-6 md:px-0"
 		>
 			<Card className="w-[250] md:w-[25rem] drop-shadow-md text-center">
 				<div className="flex items-center justify-center w-full my-4">
