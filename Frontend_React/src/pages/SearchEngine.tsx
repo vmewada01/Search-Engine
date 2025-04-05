@@ -1,9 +1,8 @@
 import Table, { ColumnProps } from "antd/es/table";
 import { useState } from "react";
-import { Pagination, Space, Tag, Typography } from "antd";
+import { message, Pagination, Space, Tag, Typography } from "antd";
 import { useFetchQuery } from "../hooks/useFetchQuery";
 import {
-  LoadingMap,
   LogEntry,
   LogResponse,
   SearchingFilters,
@@ -15,39 +14,27 @@ const SearchEngine = () => {
     page: 1,
     limit: 10,
   });
-  const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
-  const [isOpenParamsDrawer, setIsOpenParamsDrawer] = useState<boolean>(false);
-  const [paramsData, setParamsData] = useState<any>({});
-  const [loadingMap, setLoadingMap] = useState<LoadingMap>({
-    isDeletingTemplateParam: null,
-    isAddingTemplateParam: false,
-    isAddingTemplate: false,
-    isDeletingTemplate: null,
-  });
 
-  const handleChangePage = (page: number) => {
+  const handleChangePage = (page: number, size: any) => {
+    if (typeof page !== "number" || isNaN(page) || page <= 0) return;
+
     setFilters((prev) => ({
       ...prev,
-
       page: page - 1,
     }));
   };
 
   const handlePageSizeChange = (_: any, size: number) => {
+    if (typeof size !== "number" || isNaN(size) || size <= 0) return;
+
     setFilters((prev) => ({
       ...prev,
-
       limit: size,
+      page: 0,
     }));
   };
 
   const columns: ColumnProps<LogEntry>[] = [
-    {
-      title: "Message",
-      dataIndex: "Message",
-      key: "Message",
-      align: "center",
-    },
     {
       title: "Sender",
       dataIndex: "Sender",
@@ -78,6 +65,12 @@ const SearchEngine = () => {
       key: "MessageRaw",
       render: (text) => text || "-",
     },
+    {
+      title: "Message",
+      dataIndex: "Message",
+      key: "Message",
+      align: "left",
+    },
   ];
 
   const {
@@ -96,34 +89,20 @@ const SearchEngine = () => {
 
         return data;
       } catch (error: any) {
-        const message =
+        const errorMesssage =
           error?.data || "Unable to fetch data right now! Try again later.";
-        message.error(message);
+        message.error(errorMesssage);
         return [];
       }
     },
   });
-
-  const handleFiltersChange = (
-    pagination: any,
-    changedFilters: Record<string, any>,
-    sorter: Record<string, any>
-  ) => {
-    // const updatedFilter: SearchingFilters = {
-    //   ...filters,
-    //   name: changedFilters.name?.[0] || "",
-    // };
-    // setFilters(updatedFilter);
-  };
-
-  console.log(data, "data frm the api ")
 
   return (
     <div>
       <Table
         title={() => (
           <Space>
-            <Typography.Title>Parquet File List </Typography.Title>
+            <Typography.Title level={4}>Parquet File List </Typography.Title>
           </Space>
         )}
         columns={columns}
@@ -133,28 +112,38 @@ const SearchEngine = () => {
         loading={isSearching}
         dataSource={data?.logs}
         scroll={{ x: "max-content" }}
-        onChange={handleFiltersChange}
-        // expandable={{
-        // 	expandedRowRender,
-        // 	expandedRowKeys,
-        // 	onExpand: handleExpand,
-        // 	rowExpandable: record => record.params?.length > 0,
-        // }}
-        rowKey="id"
+        pagination={false}
       />
-
       <Pagination
         showTotal={(total, range) =>
-          `${range[0]}-${range[1]} of ${total} items`
+          `${range?.[0] || 0}-${range?.[1] || 0} of ${total || 0} items`
         }
         align="end"
-        current={filters.page + 1}
-        total={data?.total ? data?.total : 0}
-        pageSize={data?.page}
-        onChange={handleChangePage}
-        onShowSizeChange={handlePageSizeChange}
+        current={
+          typeof filters?.page === "number" && filters.page >= 0
+            ? filters.page + 1
+            : 1
+        }
+        total={typeof data?.total === "number" ? data.total : 0}
+        pageSize={
+          typeof data?.limit === "number"
+            ? data.limit
+            : typeof data?.page === "number"
+            ? data.page
+            : 10
+        }
+        onChange={(page, pageSize) => {
+          if (handleChangePage) {
+            handleChangePage(page - 1, pageSize);
+          }
+        }}
+        onShowSizeChange={(current, size) => {
+          if (handlePageSizeChange) {
+            handlePageSizeChange(current - 1, size);
+          }
+        }}
         showSizeChanger
-        className="mt-6 text-right"
+        className="mt-10 text-right"
       />
     </div>
   );
