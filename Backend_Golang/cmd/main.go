@@ -32,6 +32,7 @@ func main() {
 	// Routes
 	e.GET("/search", controller.SearchLogsController)
 	e.POST("/logs", controller.LogsController)
+	e.POST("/upload", controller.UploadParquetFile)
 
 	log.Fatal(e.Start(":8080"))
 }
