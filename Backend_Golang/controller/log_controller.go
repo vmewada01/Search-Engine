@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"vmewada01/search_engine/service"
@@ -8,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func SearchLogsHandler(c echo.Context) error {
+func SearchLogsController(c echo.Context) error {
 	query := c.QueryParam("q")
 	if query == "" {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Query param 'q' is required"})
@@ -18,7 +19,7 @@ func SearchLogsHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, results)
 }
 
-func PaginatedLogsHandler(c echo.Context) error {
+func PaginatedLogsControler(c echo.Context) error {
 	page, _ := strconv.Atoi(c.QueryParam("page"))
 	limit, _ := strconv.Atoi(c.QueryParam("limit"))
 
