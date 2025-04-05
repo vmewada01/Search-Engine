@@ -2,13 +2,14 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 type USER = {
-    id: string; 
-    name: string;
-    email: string;
-    role: string[];
-}
+	id: string;
+	name: string;
+	email: string;
+	role: string[];
+};
 
 interface AuthProviderContextType {
+	userRole: string;
 	user: USER;
 	setUserDetails: (userDetails: USER) => void;
 	handleLogout: () => void;
@@ -18,9 +19,7 @@ interface AuthProviderContextType {
 	isVisibleLogoutModal: boolean;
 }
 
-const AuthProviderContext = createContext<AuthProviderContextType | undefined>(
-	undefined
-);
+const AuthProviderContext = createContext<AuthProviderContextType | undefined>(undefined);
 
 export const useAuth = () => {
 	const context = useContext(AuthProviderContext);
@@ -35,7 +34,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 	const [loading, setLoading] = useState<boolean>(false);
 	const [userDetails, setUserDetails] = useState<USER | null>(null);
-	const [isVisibleLogoutModal, setIsVisibleLogoutModal]= useState<boolean>(false)
+	const [isVisibleLogoutModal, setIsVisibleLogoutModal] = useState<boolean>(false);
 
 	const navigate = useNavigate();
 
@@ -43,18 +42,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 		setLoading(true);
 
 		try {
-			//const { data } = await USER_SERVICES.getCurrentUserDetails();
+			// Simulate a delay of 5 seconds
+			setTimeout(() => {
+				const dummyUser: USER = {
+					id: "12345",
+					name: "Vishal Mewada",
+					email: "vishalmewada9826@gmail.com",
+					role: ["admin"],
+				};
 
-			// if (!data || data.roles?.length === 0) {
-			// 	throw new Error("No data found for this user");
-			// }
-
-			// setUserDetails(data);
+				localStorage.setItem("token", "dummy_token_12345");
+				setUserDetails(dummyUser);
+				setLoading(false);
+			}, 5000);
 		} catch (error) {
 			console.log("Unable to fetch userDetails", error);
 			handleLogout();
-		} finally {
-			setLoading(false);
 		}
 	};
 
@@ -74,6 +77,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<AuthProviderContext.Provider
 			value={{
+				userRole: userDetails?.role?.[0] as string,
 				user: userDetails || ({} as USER),
 				setUserDetails,
 				handleLogout,

@@ -2,10 +2,10 @@ import {
 	DashboardOutlined,
 	LoadingOutlined,
 	LogoutOutlined,
+	UploadOutlined,
 	UserOutlined,
 } from "@ant-design/icons";
 import { Button, Dropdown, Layout, Menu, Spin, theme } from "antd";
-import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/authProvider";
 import RoutesConfig from "../../routes/routes";
@@ -22,9 +22,7 @@ Spin.setDefaultIndicator(
 const MainLayout = () => {
 	const token = localStorage.getItem("token");
 
-	const { user, handleLogout } = useAuth();
-
-	const [updatePassword, setUpdatePassword] = useState<boolean>(false);
+	const { user, handleLogout, userRole } = useAuth();
 
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -42,11 +40,10 @@ const MainLayout = () => {
 		},
 		
 		{
-			label: "Logout",
-			icon: <LogoutOutlined />,
-			onClick: () => {
-				handleLogout();
-			},
+			label: "Upload",
+			icon: <UploadOutlined />,
+			onClick: () => navigate("/search-engine/upload"),
+			path: ""
 		},
 	].map((i, idx) => ({ key: idx, ...i }));
 
@@ -60,7 +57,24 @@ const MainLayout = () => {
 		},
 	].map((i, idx) => ({ key: idx, ...i }));
 
-	const activeItem = menuItems.find(i => i.path === location.pathname)?.key;
+	const findActiveItem = (
+		items: any[],
+		currentPath: string
+	): string | null => {
+		for (const item of items) {
+			if (item.path === currentPath) return item.key;
+			if (item.children) {
+				const activeChild = findActiveItem(item.children, currentPath);
+				if (activeChild) return activeChild;
+			}
+		}
+		return null;
+	};
+
+	const activeItem: string | null = findActiveItem(
+		menuItems,
+		location.pathname
+	);
 
 	// login layout
 	if (!token) {
@@ -72,7 +86,7 @@ const MainLayout = () => {
 	}
 
 	// splash screen
-	if (token ) {
+	if (token && !userRole) {
 		return (
 			<div className="flex items-center justify-center w-full h-screen">
 				<img
@@ -86,7 +100,7 @@ const MainLayout = () => {
 	return (
 		<Layout className="min-h-screen">
 			<Header className="flex items-center justify-between px-6">
-				<img src="/assets/logo.png" className="select-none h-[5rem]" />
+				<img src="/company_logo.png" width={200}  />
 
 				{menuItems.length > 1 && (
 					<Menu

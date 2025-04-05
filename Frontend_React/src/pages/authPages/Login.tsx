@@ -16,31 +16,31 @@ const Login = () => {
 	const navigate = useNavigate();
 
 	const onFinish = async (values: { username: string; password: string }) => {
-		values.password = btoa(values?.password);
+		const { username, password } = values;
 
 		setIsSubmitting(true);
 
-		try {
-			// const res = await AUTH_SERVICES.login(values);
+		// Simulate login process
+		setTimeout(() => {
+			if (username === "vishal.mewada" && password === "Vishal@123") {
+				const dummyUser = {
+					id: "123",
+					name: "Vishal Mewada",
+					email: "vishal.mewada@example.com",
+					role: ["admin"],
+				};
 
-			// if (!res.data.token) {
-			// 	showError(res);
-			// 	return;
-			// }
-
-			// const { token, role, ...rest } = res?.data;
-
-			// localStorage.setItem("token", token);
-			// setUserDetails({ ...rest, roles: role });
-
-			navigate("/", { replace: true });
-		} catch (error) {
-			// @ts-ignore
-			showError(error, "Invalid credentials!");
-		} finally {
+				localStorage.setItem("token", "dummy_token_123");
+				setUserDetails(dummyUser);
+				message.success("Login successful!");
+				navigate("/", { replace: true });
+			} else {
+				message.error("Wrong credentials!");
+			}
 			setIsSubmitting(false);
-		}
+		}, 2000);
 	};
+
 
 	return (
 		<section
@@ -51,9 +51,9 @@ const Login = () => {
 			}}
 			className="flex items-center justify-center h-full px-6 md:px-0 bg-red-500"
 		>
-			<Card className="w-full md:w-[25rem] drop-shadow-md text-center">
+			<Card className="w-[250] md:w-[25rem] drop-shadow-md text-center">
 				<div className="flex items-center justify-center w-full my-4">
-					<img src="/company_logo.png" alt="logo" className="size-10" />
+					<img src="/company_logo.png" alt="logo"  />
 				</div>
 
 				<Title className="!text-3xl">Login</Title>
@@ -62,7 +62,10 @@ const Login = () => {
 					Welcome to Search Engine tool! Enter the given details to login.
 				</Text>
 
-				<Form onFinish={onFinish} layout="vertical" className="mt-6 text-start">
+				<Form initialValues={{
+					username: "vishal.mewada",
+					password: "Vishal@123"
+				}} onFinish={onFinish} layout="vertical" className="mt-6 text-start">
 					<Form.Item
 						name="username"
 						rules={[
@@ -90,7 +93,7 @@ const Login = () => {
 							autoFocus
 							size="large"
 							prefix={<UserOutlined className="pr-1" />}
-							placeholder="Username"
+							placeholder="Username = vishal.mewada"
 						/>
 					</Form.Item>
 
@@ -114,7 +117,7 @@ const Login = () => {
 							size="large"
 							prefix={<LockOutlined className="pr-1" />}
 							type="password"
-							placeholder="Password"
+							placeholder="Password = Vishal@123"
 						/>
 					</Form.Item>
 

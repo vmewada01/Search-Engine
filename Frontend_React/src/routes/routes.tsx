@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import SearchEngine from "../pages/SearchEngine";
 import Login from "../pages/authPages/Login";
+import SearchEngineUpload from "../pages/SearchEngineUpload";
 
 const RoutesConfig = () => {
 	const token = localStorage.getItem("token");
@@ -18,11 +19,13 @@ const RoutesConfig = () => {
 
 	return (
 		<Routes>
-			<Route path="*" element={<Navigate to="/" replace />} />
+			<Route path="*" element={<Navigate to="/search-engine" replace />} />
 
-			<Route path="/" element={<SearchEngine />} />
+			<Route path="/" element={<Navigate to="/search-engine" replace />} />
 
 			<Route path="/search-engine" element={<SearchEngine />} />
+
+			<Route path="/search-engine/upload" element={<SearchEngineUpload />} />
 		</Routes>
 	);
 };
