@@ -1,5 +1,11 @@
 package model
 
+type LogRequest struct {
+	Page  int    `json:"page"`
+	Limit int    `json:"limit"`
+	Query string `json:"query"`
+}
+
 type LogRecord struct {
 	Message        string `parquet:"name=Message, type=BYTE_ARRAY, convertedtype=UTF8"`
 	MessageRaw     string `parquet:"name=MessageRaw, type=BYTE_ARRAY, convertedtype=UTF8"`

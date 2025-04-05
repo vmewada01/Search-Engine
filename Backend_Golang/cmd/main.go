@@ -31,7 +31,7 @@ func main() {
 
 	// Routes
 	e.GET("/search", controller.SearchLogsController)
-	e.GET("/logs", controller.PaginatedLogsControler)
+	e.POST("/logs", controller.LogsController)
 
 	log.Fatal(e.Start(":8080"))
 }
